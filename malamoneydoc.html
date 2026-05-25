@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>บันทึกรายรับ-รายจ่าย ร้านหม่าล่า (เวอร์ชันละเอียด)</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+  <style>
+    body { padding: 15px; background-color: #f9f9f9; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; display: flex; justify-content: center; }
+    .form-container { max-width: 500px; width: 100%; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+    .section-title { font-weight: bold; color: #d9381e; border-bottom: 2px solid #d9381e; padding-bottom: 5px; margin-bottom: 15px; }
+    .field-body .field { margin-bottom: 10px; }
+    .button.is-danger { background-color: #d9381e; }
+  </style>
+</head>
+<body>
+
+<div class="form-container">
+  <form id="malaForm">
+    
+    <div class="field">
+      <label class="label">📅 วันที่บันทึก</label>
+      <div class="control">
+        <input class="input" type="date" id="dateInput" required>
+      </div>
+    </div>
+
+    <div class="section-title">💰 รายรับ (ประจำวัน)</div>
+    
+    <div class="field">
+      <label class="label">🏪 ยอดขายหน้าร้าน (เงินสด/โอนเข้าบัญชีตรง)</label>
+      <input class="input" type="number" id="shop" step="0.01" placeholder="0.00" value="0">
+    </div>
+
+    <div class="columns is-mobile">
+      <div class="column"><label class="label is-small">🛵 Grab (ยอดขาย)</label><input class="input is-small" type="number" id="grabSale" step="0.01" placeholder="0.00" value="0"></div>
+      <div class="column"><label class="label is-small">💸 Grab (เงินเข้าจริง)</label><input class="input is-small" type="number" id="grabReal" step="0.01" placeholder="0.00" value="0"></div>
+    </div>
+
+    <div class="columns is-mobile">
+      <div class="column"><label class="label is-small">🛵 Line Man (ยอดขาย)</label><input class="input is-small" type="number" id="lmSale" step="0.01" placeholder="0.00" value="0"></div>
+      <div class="column"><label class="label is-small">💸 LM (เงินเข้าจริง)</label><input class="input is-small" type="number" id="lmReal" step="0.01" placeholder="0.00" value="0"></div>
+    </div>
+
+    <div class="columns is-mobile">
+      <div class="column"><label class="label is-small">🟠 Shopee (ยอดขาย)</label><input class="input is-small" type="number" id="shopeeSale" step="0.01" placeholder="0.00" value="0"></div>
+      <div class="column"><label class="label is-small">💸 Shopee (เงินเข้าจริง)</label><input class="input is-small" type="number" id="shopeeReal" step="0.01" placeholder="0.00" value="0"></div>
+    </div>
+
+    <div class="section-title">💸 รายจ่าย / ต้นทุน</div>
+    
+    <div class="field">
+      <label class="label is-small">🐷 ค่าวัตถุดิบสด (เนื้อสัตว์/ผัก/ลูกชิ้น)</label>
+      <input class="input is-small" type="number" id="cost1" step="0.01" placeholder="0.00" value="0">
+    </div>
+    <div class="field">
+      <label class="label is-small">🌶️ ค่าพริกหม่าล่า / ซอส / เครื่องปรุง</label>
+      <input class="input is-small" type="number" id="cost2" step="0.01" placeholder="0.00" value="0">
+    </div>
+    <div class="field">
+      <label class="label is-small">📦 ค่าแพ็คเกจจิ้ง (กล่อง/ถุง/ไม้เสียบ)</label>
+      <input class="input is-small" type="number" id="cost3" step="0.01" placeholder="0.00" value="0">
+    </div>
+    <div class="field">
+      <label class="label is-small">🏠 ค่าเช่าร้าน / ค่าน้ำ / ค่าไฟ (รายวัน)</label>
+      <input class="input is-small" type="number" id="cost4" step="0.01" placeholder="0.00" value="0">
+    </div>
+    <div class="field">
+      <label class="label is-small">📢 ค่าโฆษณา/ค่าดันร้าน (ในแอปเดลิเวอรี่)</label>
+      <input class="input is-small" type="number" id="cost5" step="0.01" placeholder="0.00" value="0">
+    </div>
+
+    <div class="section-title">📝 รายละเอียด/หมายเหตุการซื้อ</div>
+    <div class="field">
+      <div class="control">
+        <textarea class="textarea is-small" id="note" placeholder="ตัวอย่าง: ค่าน้ำซุปหม่าล่า, ไส้นม 2 กิโล, ไม้เสียบ 3 แพ็ค, แฟลชเซลล์แกร็บ"></textarea>
+      </div>
+    </div>
+
+    <br>
+    <button type="submit" class="button is-danger is-fullwidth font-weight-bold" id="submitBtn">💾 บันทึกข้อมูล</button>
+  </form>
+</div>
+
+  <script>
+    document.getElementById('dateInput').valueAsDate = new Date();
+
+    // 🔴 วาง URL Web App จาก Google Sheets ของคุณตรงนี้ครับ
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxAnx7duwZw4pEt-3sS_3hKiUvmK60TOFW1q4ERlO0FlrTZsCrVarUfPzP5XNcgKGxw/exec";
+
+    document.getElementById('malaForm').addEventListener('submit', function(event) {
+      event.preventDefault();
+      
+      const submitBtn = document.getElementById('submitBtn');
+      submitBtn.innerText = "⏳ กำลังบันทึก...";
+      submitBtn.disabled = true;
+
+      const formData = {
+        date: document.getElementById('dateInput').value,
+        shop: document.getElementById('shop').value,
+        grabSale: document.getElementById('grabSale').value,
+        grabReal: document.getElementById('grabReal').value,
+        lmSale: document.getElementById('lmSale').value,
+        lmReal: document.getElementById('lmReal').value,
+        shopeeSale: document.getElementById('shopeeSale').value,
+        shopeeReal: document.getElementById('shopeeReal').value,
+        cost1: document.getElementById('cost1').value,
+        cost2: document.getElementById('cost2').value,
+        cost3: document.getElementById('cost3').value,
+        cost4: document.getElementById('cost4').value,
+        cost5: document.getElementById('cost5').value,
+        note: document.getElementById('note').value // ส่งหมายเหตุไปด้วย
+      };
+
+      fetch(WEB_APP_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      })
+      .then(() => {
+        alert('🎉 บันทึกข้อมูลแบบละเอียดสำเร็จแล้ว!');
+        document.getElementById("malaForm").reset();
+        document.getElementById('dateInput').valueAsDate = new Date();
+      })
+      .catch(error => {
+        alert('เกิดข้อผิดพลาด: ' + error);
+      })
+      .finally(() => {
+        submitBtn.innerText = "💾 บันทึกข้อมูล";
+        submitBtn.disabled = false;
+      });
+    });
+  </script>
+</body>
+</html>
